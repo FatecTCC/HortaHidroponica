@@ -44,7 +44,7 @@ router.post('/register', urlencodedParser, function(req, res){
             res.redirect('home');
         }
         else{
-            errorMsg.msg = "Esse e-mail já foi cadastradooo!";
+            errorMsg.msg = "Esse e-mail já foi cadastrado!";
             res.render('register', {error: errorMsg});
         }
     });
