@@ -8,7 +8,6 @@ var success = {msg: ''};
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 
-
 //GET REQUESTS
 router.get('/home', function(req, res){
     res.render('home', {data: ''});
@@ -80,5 +79,23 @@ router.post('/formHorta', urlencodedParser, function(req, res) {
     
      //else generate new number
 });
+
+
+//GET API
+router.get('/api/usuarios', function(req, res){
+    Usuario.find({}).then(function(result){
+        res.json(result);
+    });
+}); 
+
+
+//DELETE API
+router.delete('/api/usuarios/:id', function(req, res){
+    Usuario.findOneAndDelete({_id: req.params.id}).then(function(data){
+       res.send(data);
+    });
+});
+
+
 
 module.exports = router;
