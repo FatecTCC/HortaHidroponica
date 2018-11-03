@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const Historico = new Schema({
-	ph: {type: Number, min: 0, max: 14},
+	ph: { type: Number, min: 0, max: 14 },
 	data: Date,
 	turbidez: Number,
 	vazao: String,
@@ -17,20 +17,33 @@ const PedidoSchema = new Schema({
 });
 
 const HortaSchema = new Schema({
-	ph: {type: Number, min: 0, max: 14},
+	nome: String,
+	cidade: String,
+	temperatura: Number,
+	profSolo: Number,
+	nutrientes: String,
+	clima: String,
+	umidade: Number,
+	ph: { type: Number, min: 0, max: 14 },
 	data: Date,
 	turbidez: Number,
 	vazao: String,
 	umidadeRelAr: String,
-	temperatura: String,
 	historico: [Historico]
 
 });
 
 const UsuarioSchema = new Schema({
+	id: Number,
 	nome: String,
+	sobrenome: String,
 	senha: String,
-	email: {type: String, lowercase: true},
+	cpf: Number,
+	email: { type: String, lowercase: true },
+	endereco: String,
+	numero: String,
+	telefone: String,
+	cidade: String,
 	estado: String,
 	hortas: [HortaSchema],
 	pedidos: [PedidoSchema],
@@ -43,12 +56,12 @@ const Usuario = mongoose.model('cliente', UsuarioSchema);
 
 module.exports = Usuario;
 
-module.exports.createUser = function(newUser, callback){
+module.exports.createUser = function (newUser, callback) {
 	var bcrypt = require('bcryptjs');
-	bcrypt.genSalt(10, function(err, salt) {
-	    bcrypt.hash(newUser.senha, salt, function(err, hash) {
-	        newUser.senha = hash;
-	        newUser.save(callback);
-	    });
+	bcrypt.genSalt(10, function (err, salt) {
+		bcrypt.hash(newUser.senha, salt, function (err, hash) {
+			newUser.senha = hash;
+			newUser.save(callback);
+		});
 	});
 }

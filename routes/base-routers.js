@@ -3,30 +3,37 @@ const bodyParser = require('body-parser');
 const Usuario = require('../models/usuario');
 var mongoose = require('mongoose');
 
-var errorMsg = [{msg: ''}];
-var success = {msg: ''};
+var errorMsg = [{ msg: '' }];
+var success = { msg: '' };
 
-var urlencodedParser = bodyParser.urlencoded({extended: false});
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 //GET REQUESTS
-router.get('/home', function(req, res){
-    res.render('home', {data: ''});
+router.get('/home', function (req, res) {
+    res.render('home', { data: '' });
 });
 
-router.get('/register', function(req, res){
-    res.render('register', {error: errorMsg, success: success});
+router.get('/register', function (req, res) {
+    res.render('register', { error: errorMsg, success: success });
 });
 
-router.get('/formHorta', function(req, res){
+router.get('/formHorta', function (req, res) {
     res.render('formHorta');
 });
 
 //POST REQUESTS
-router.post('/register', urlencodedParser, function(req, res){
-    Usuario.find({email: req.body["email"]}).then(function(result){
-        if (result.length == 0){
+router.post('/register', urlencodedParser, function (req, res) {
+    Usuario.find({ email: req.body["email"] }).then(function (result) {
+        if (result.length == 0) {
             var newUser = new Usuario({
+                sobrenome: req.body["sobrenome"],
+                cpf: req.body["cpf"],
+                endereco: req.body["endereco"],
+                numero: req.body["numero"],
+                telefone: req.body["telefone"],
+                cidade: req.body["cidade"],
+                estado: req.body["estado"],
                 nome: req.body["nome"],
                 senha: req.body["senha"],
                 email: req.body["email"],
@@ -35,7 +42,7 @@ router.post('/register', urlencodedParser, function(req, res){
 
             });
 
-            Usuario.createUser(newUser, function(err, user){
+            Usuario.createUser(newUser, function (err, user) {
                 if (err) throw err;
                 console.log(err);
             });
@@ -43,42 +50,60 @@ router.post('/register', urlencodedParser, function(req, res){
             success.msg = 'Successfully Registered!!';
             res.redirect('home');
         }
-        else{
+        else {
             errorMsg.msg = "Esse e-mail já foi cadastrado!";
-            res.render('register', {error: errorMsg});
+            res.render('register', { error: errorMsg });
         }
     });
 });
 
-router.post('/formHorta', urlencodedParser, function(req, res) {
+router.post('/formHorta', urlencodedParser, function (req, res) {
     var today = new Date();
     var dd = today.getDate();
-    var mm = today.getMonth()+1; //January is 0!
+    var mm = today.getMonth() + 1; //January is 0!
     var yyyy = today.getFullYear();
     var hh = today.getHours();
     var mmm = today.getMinutes();
     today = mm + '/' + dd + '/' + yyyy + "-" + hh + ":" + mmm;
 
-    Usuario.findOne({nome: req.user.nome}).then(function(result){
+    Usuario.findOne({ nome: req.user.nome }).then(function (result) {
         result.hortas.push({
             data: today
         });
 
-        hortaId = result.hortas[result.hortas.length-1]["id"];
+        hortaId = result.hortas[result.hortas.length - 1]["id"];
         console.log("Esse eh o numero da sua horta! " + hortaId);
 
         result.save();
     });
 
-     //generate a random number of garden
-     //console.log(randomNumber);
-     //search on database if there is such a number 
+    //generate a random number of garden
+    //console.log(randomNumber);
+    //search on database if there is such a number 
     // Usuario.find({}).then(function(Cliente){
-     //   console.log(Cliente);
-     //});
-     //if there isnt, create
-    
-     //else generate new number
+    //   console.log(Cliente);
+    //});
+    //if there isnt, create
+
+    //else generate new number
 });
+
+
+//GET API
+router.get('/api/usuarios', function (req, res) {
+    Usuario.find({}).then(function (result) {
+        res.json(result);
+    });
+});
+
+
+//DELETE API
+router.delete('/api/usuarios/:id', function (req, res) {
+    Usuario.findOneAndDelete({ _id: req.params.id }).then(function (data) {
+        res.send(data);
+    });
+});
+
+
 
 module.exports = router;

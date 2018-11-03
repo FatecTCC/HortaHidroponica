@@ -5,25 +5,27 @@ const LocalStrategy = require('passport-local').Strategy;
 const Usuario = require('../models/usuario');
 
 
-var urlencodedParser = bodyParser.urlencoded({extended: false});
-var errorMsg = [{msg: ''}];
-var success = {msg: ''};
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+var errorMsg = [{ msg: '' }];
+var success = { msg: '' };
 
-router.get('/logout', function(req, res){
+router.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/home');
 });
 
 router.get('/google', passport.authenticate('google', {
-    scope:['profile'] 
+    scope: ['profile']
 }));
 
-router.get('/google/redirect', passport.authenticate('google'), function(req, res){
+router.get('/google/redirect', passport.authenticate('google'), function (req, res) {
     res.redirect('/profile/');
 });
 
 router.post('/login', passport.authenticate('local'), function (req, res) {
-    res.redirect('/profile/');
+    return res.status(200).json({
+        status: "success"
+    })
 });
 
 
