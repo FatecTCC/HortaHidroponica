@@ -47,7 +47,6 @@ passport.use(new LocalStrategy({
         passwordField: "senha" //name field in HTML
     },
 	function (username, password, done) {
-        console.log(username, password);
 		Usuario.find({email: username}).then(function(result){
             bcrypt.compare(password, result[0]["senha"], function(err, result2) {
                 if (result2 === true){

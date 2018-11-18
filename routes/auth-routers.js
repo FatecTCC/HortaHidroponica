@@ -23,6 +23,7 @@ router.get('/google/redirect', passport.authenticate('google'), function(req, re
 });
 
 router.post('/login', passport.authenticate('local'), function (req, res) {
+    console.log(req.user);
     res.redirect('/profile/');
 });
 
