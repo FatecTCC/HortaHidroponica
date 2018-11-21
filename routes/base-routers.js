@@ -89,6 +89,17 @@ router.get('/api/usuarios', function(req, res){
 }); 
 
 
+router.get('/api/userlogged', function(req, res){
+    if(req.user !== undefined){
+        res.send(req.user);
+    }
+    else{
+        res.send("Nenhum resultado obtido");
+    }
+});
+
+
+
 //DELETE API
 router.delete('/api/usuarios/:id', function(req, res){
     Usuario.findOneAndDelete({_id: req.params.id}).then(function(data){
