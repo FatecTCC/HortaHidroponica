@@ -91,7 +91,7 @@ router.get('/api/usuarios', function(req, res){
 
 router.get('/api/userlogged', function(req, res){
     if(req.user !== undefined){
-        res.send(req.user);
+        res.json(req.user);
     }
     else{
         res.send("Nenhum resultado obtido");
