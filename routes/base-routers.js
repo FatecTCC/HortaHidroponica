@@ -17,10 +17,6 @@ router.get('/register', function(req, res){
     res.render('register', {error: errorMsg, success: success});
 });
 
-router.get('/formHorta', function(req, res){
-    res.render('formHorta');
-});
-
 //POST REQUESTS
 router.post('/register', urlencodedParser, function(req, res){
     Usuario.find({email: req.body["email"]}).then(function(result){
@@ -56,7 +52,8 @@ router.post('/formHorta', urlencodedParser, function(req, res) {
     var yyyy = today.getFullYear();
     var hh = today.getHours();
     var mmm = today.getMinutes();
-    today = mm + '/' + dd + '/' + yyyy + "-" + hh + ":" + mmm;
+    var ss = today.getSeconds();
+    today = mm + '/' + dd + '/' + yyyy + "-" + hh + ":" + mmm + ":" + ss;
 
     Usuario.findOne({nome: req.user.nome}).then(function(result){
         result.hortas.push({
@@ -65,8 +62,8 @@ router.post('/formHorta', urlencodedParser, function(req, res) {
 
         hortaId = result.hortas[result.hortas.length-1]["id"];
         console.log("Esse eh o numero da sua horta! " + hortaId);
-
         result.save();
+        res.redirect('/profile/');
     });
 
      //generate a random number of garden
@@ -98,8 +95,6 @@ router.get('/api/userlogged', function(req, res){
     }
 });
 
-
-
 //DELETE API
 router.delete('/api/usuarios/:id', function(req, res){
     Usuario.findOneAndDelete({_id: req.params.id}).then(function(data){
@@ -107,6 +102,16 @@ router.delete('/api/usuarios/:id', function(req, res){
     });
 });
 
+router.delete('/deleteHorta/:id', function(req, res){
+    Usuario.findById({_id: req.user.id}).then(function(user){
+        newHortas = user.hortas.filter(hortas => {
+            return hortas.id !== req.params.id
+        });
+        user.hortas = newHortas;
+        user.save();
+        res.json(newHortas);
+     });
+});
 
 
 module.exports = router;
